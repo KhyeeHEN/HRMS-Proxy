@@ -8,6 +8,9 @@ use App\Models\Job;
 use App\Models\Company;
 use App\Models\CompanyEvent;    // for company events
 use App\Models\Holiday;         // for company holidays
+use App\Models\Kpi; // ADDED: KPI Model
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -401,5 +404,65 @@ class DashboardController extends Controller
 
         // Sort the combined collection by date
         return $allEvents->sortBy('start_date');
+    }
+
+    public function pmsIndex()
+    {
+        $user = Auth::user();
+
+        // Initialize variables for different access levels
+        $kpiCount = 0;
+        $appraisalCount = 0;
+        $appraisalStatus = collect();
+        $staffList = collect();
+
+        if (in_array($user->access, ['Admin', 'HR'])) {
+            // Admin and HR can see all KPIs, Appraisals, and Staff
+            $kpiCount = Kpi::count();
+            $appraisalCount = Appraisal::count();
+
+            $appraisalStatus = Appraisal::with(['staff.job', 'staff.department'])
+                ->orderBy('updated_at', 'desc')
+                ->take(10)
+                ->get();
+
+            $staffList = User::where('access', 'Staff')
+                ->with(['job', 'department', 'supervisor'])
+                ->orderBy('name', 'asc')
+                ->take(10)
+                ->get();
+        } elseif ($user->access === 'Manager') {
+            // Managers can see KPIs, Appraisals, and Staff for their subordinates
+            $kpiCount = Kpi::where('manager_id', $user->id)->count();
+            $appraisalCount = Appraisal::whereHas('staff', function ($query) use ($user) {
+                $query->where('supervisor_id', $user->id);
+            })->count();
+
+            $appraisalStatus = Appraisal::whereHas('staff', function ($query) use ($user) {
+                $query->where('supervisor_id', $user->id);
+            })->with(['staff.job', 'staff.department'])
+                ->orderBy('updated_at', 'desc')
+                ->take(10)
+                ->get();
+
+            $staffList = User::where('supervisor_id', $user->id)
+                ->with(['job', 'department', 'supervisor'])
+                ->orderBy('name', 'asc')
+                ->take(10)
+                ->get();
+        } else { // Staff
+            // Staff members see only their own data
+            $kpiCount = Kpi::where('staff_id', $user->id)->count();
+            $appraisalCount = Appraisal::where('staff_id', $user->id)->count();
+
+            $appraisalStatus = Appraisal::where('staff_id', $user->id)
+                ->with(['staff.job', 'staff.department'])
+                ->take(10)
+                ->get();
+
+            $staffList = collect([$user])->load(['job', 'department', 'supervisor']);
+        }
+
+        return view('pms.dashboard', compact('kpiCount', 'appraisalCount', 'appraisalStatus', 'staffList'));
     }
 }

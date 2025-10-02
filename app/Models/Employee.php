@@ -29,7 +29,7 @@ class Employee extends Model
     public $timestamps = false;
 
     // Specify which attributes are mass assignable (if you're using mass assignment)
-    protected $fillable = ['employee_id', 'first_name', 'middle_name', 'last_name', 'nationality', 'birthday', 'gender', 'marital_status', 'ssn_num', 'nic_num', 'other_id', 'driving_license', 'driving_license_exp_date', 'employment_status', 'job_title', 'pay_grade', 'work_station_id', 'branch', 'address1', 'address2', 'city', 'country', 'state', 'postal_code', 'home_phone', 'mobile_phone', 'work_phone', 'work_email', 'private_email', 'joined_date', 'confirmation_date', 'supervisor', 'indirect_supervisors', 'company', 'department', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5', 'custom6', 'custom7', 'custom8', 'custom9', 'custom10', 'termination_date', 'notes', 'status', 'ethnicity', 'immigration_status', 'epf_no', 'socso', 'lhdn_no', 'family', 'qualification', 'experience'];
+    protected $fillable = ['employee_id', 'first_name', 'middle_name', 'last_name', 'nationality', 'birthday', 'gender', 'marital_status', 'ssn_num', 'nic_num', 'other_id', 'driving_license', 'driving_license_exp_date', 'employment_status', 'job_title', 'pay_grade', 'work_station_id', 'branch', 'address1', 'address2', 'city', 'country', 'state', 'postal_code', 'home_phone', 'mobile_phone', 'work_phone', 'work_email', 'private_email', 'joined_date', 'confirmation_date', 'supervisor', 'indirect_supervisors', 'company', 'department', 'unit', 'custom2', 'custom3', 'custom4', 'custom5', 'custom6', 'custom7', 'custom8', 'custom9', 'custom10', 'termination_date', 'notes', 'status', 'ethnicity', 'immigration_status', 'epf_no', 'socso', 'lhdn_no', 'family', 'qualification', 'experience'];
 
     // Specify which attributes should be hidden for arrays (e.g., sensitive data)
     protected $hidden = ['password'];
@@ -74,5 +74,10 @@ class Employee extends Model
     public function departmentName()
     {
         return $this->belongsTo(Department::class, 'department', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

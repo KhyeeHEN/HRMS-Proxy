@@ -13,6 +13,8 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetUploadController;
 use App\Http\Controllers\AssetCategoryController;
+use App\Http\Controllers\KpiController; // ADDED: New KPI Controller
+use App\Http\Controllers\AppraisalController; // ADDED: New Appraisal Controller
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +35,7 @@ Route::get('/birthday', function () {
 Route::get('/calendar-test', function () {
     return view('test');
 });
+
 // Show Forgot Password Form
 Route::get('/forgot-password', function () {
     return view('forgot');
@@ -46,6 +49,7 @@ Route::post('/', [AuthController::class, 'index'])->name('login.post'); // This 
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
     Route::get('/past-employees', [EmployeeController::class, 'indexPast'])->name('past.employees');
@@ -93,7 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
     Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy'); // REQUIRED!
     Route::get('/assets/upload', [AssetUploadController::class, 'showUpload'])->name('assets.upload');
-    Route::post('/assets/upload', [AssetUploadController::class, 'uploadAsset'])->name('upload.assets'); 
+    Route::post('/assets/upload', [AssetUploadController::class, 'uploadAsset'])->name('upload.assets');
     Route::get('/assets/template/download', [AssetUploadController::class, 'downloadTemplate'])->name('assets.template.download');
     Route::resource('asset-categories', AssetCategoryController::class);
     Route::post('/assets/assign', [AssetController::class, 'assign'])->name('assets.assign');
@@ -105,6 +109,19 @@ Route::middleware('auth')->group(function () {
     Route::resource('company', CompanyController::class);
     Route::get('/company/{id}/employees', [CompanyController::class, 'employees'])->name('company.employees');
 
+    // Routes for KPI System
+    Route::resource('kpi', KpiController::class);
+    Route::post('kpi/{kpi}/accept', [KpiController::class, 'accept'])->name('kpi.accept');
+    Route::post('/kpi/{kpi}/request-revision', [KpiController::class, 'requestRevision'])->name(name: 'kpi.request-revision');
+    Route::post('kpi-goals/{kpiGoal}/track', [KpiController::class, 'trackGoal'])->name('kpi.goal.track');
+
+    // New routes for assigning KPIs
+    Route::get('/kpi/assign/{kpi}', [KpiController::class, 'showAssignmentForm'])->name('kpi.assign.show');
+    Route::post('/kpi/assign/{kpi}', [KpiController::class, 'assign'])->name('kpi.assign.store');
+
+
+    // Routes for PMS Dashboard
+    Route::get('/pms-dashboard', [DashboardController::class, 'pmsIndex'])->name('pms-dashboard');
 
     Route::get('/departments', [DepartmentController::class, 'index'])->name('department.index');
     Route::post('/departments/store', [DepartmentController::class, 'store'])->name('department.store');
@@ -112,9 +129,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/departments/update/{id}', [DepartmentController::class, 'update'])->name('department.update');
     Route::delete('/departments/destroy/{id}', [DepartmentController::class, 'destroy'])->name('department.destroy');
     Route::get('/departments/{id}/employees', [DepartmentController::class, 'employees'])->name('department.employees');
-
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 });
 Auth::routes();
 
@@ -130,6 +144,3 @@ Route::post('/company/validate-editfield', [CompanyController::class, 'validateE
 Route::post('/validate-login', [AuthController::class, 'validateLoginField'])->name('login.validate');
 Route::post('/validate-field', [DepartmentController::class, 'validateField'])->name('department.validateField');
 Route::post('/validate-edit-field', [DepartmentController::class, 'validateEditField'])->name('department.validateEditField');
-
-
-

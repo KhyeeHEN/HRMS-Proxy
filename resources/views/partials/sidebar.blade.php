@@ -120,27 +120,56 @@
                     </div>
                 </li>
             @endif
+        @endif
 
-            @if(in_array(auth()->user()->access, ['Admin', 'HR', 'Technical', 'Employee', 'Manager']))
-                <!-- Management Section -->
-                <hr class="sidebar-divider">
-                <div class="sidebar-heading">PMS</div>
+        @if(auth()->user()->access === 'Admin' || auth()->user()->access === 'HR' || auth()->user()->access === 'Employee' || auth()->user()->access === 'Manager')
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">PMS</div>
+            {{-- ADDED: New PMS pages --}}
+            @if(in_array(auth()->user()->access, ['Admin', 'HR', 'Manager']))
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseKpi" aria-expanded="true"
+                        aria-controls="collapseKpi">
+                        <i class="fas fa-fw fa-clipboard-list"></i>
+                        <span>KPI Management</span>
+                    </a>
+                    <div id="collapseKpi" class="collapse" aria-labelledby="headingKpi" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{{ route('kpi.create') }}">Create KPI</a>
+                            <a class="collapse-item" href="{{ route('kpi.index') }}">View KPI List</a>  
+                        </div>
+                    </div>
+                </li>
             @endif
 
-            @if(auth()->user()->access === 'Admin' || auth()->user()->access === 'HR')
-                <!-- Extras - All roles -->
-                <hr class="sidebar-divider">
-                <div class="sidebar-heading">Extras</div>
+            {{-- ADDED: Staff KPI Management Dropdown --}}
+            @if(auth()->user()->access === 'Admin' || auth()->user()->access === 'HR' || auth()->user()->access === 'Employee')
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('book') }}">
-                        <i class="fas fa-fw fa-book"></i>
-                        <span>Employee Handbook</span>
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppraisal"
+                        aria-expanded="true" aria-controls="collapseAppraisal">
+                        <i class="fas fa-fw fa-clipboard-check"></i>
+                        <span>Staff KPI Management</span>
                     </a>
+                    <div id="collapseAppraisal" class="collapse" aria-labelledby="headingAppraisal" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{{ route('pms-dashboard') }}">PMS Profile</a>
+                            <a class="collapse-item" href="{{ route('kpi.index') }}">Assigned KPI</a>
+                            <a class="collapse-item" href="">Documentation</a>
+                        </div>
+                    </div>
                 </li>
             @endif
         @endif
 
-
+        <!-- Extras - All roles -->
+        <hr class="sidebar-divider">
+        <div class="sidebar-heading">Extras</div>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('book') }}">
+                <i class="fas fa-fw fa-book"></i>
+                <span>Employee Handbook</span>
+            </a>
+        </li>
     @endauth
 
 </ul>
