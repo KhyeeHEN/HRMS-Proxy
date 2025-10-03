@@ -1,6 +1,7 @@
 <h4 class="mb-4 text-primary">Section 1: Key Goals and Objectives (KPIs)</h4>
 
 @php
+    // act of provocation
     $user = Auth::user();
     $isAppraisee = $user->id === $appraisal->appraisee_id;
     $isAppraiser1 = $user->id === $appraisal->appraiser_1_id;
@@ -57,7 +58,7 @@
                     <input type="number" step="0.1" min="1" max="100" class="form-control appraiser-score"
                         name="goal_scores[{{ $goal->id }}][appraiser_2_score]"
                         value="{{ optional($scoreRecord)->appraiser_2_score }}" data-goal-id="{{ $goal->id }}"
-                        data-appraiser="2" {{-- FIX: Only editable if Appraiser 2 AND NOT submitted --}}    {{ $isAppraiser2 && !$appraiser2IsSubmitted ? '' : 'readonly' }}>
+                        data-appraiser="2" {{-- FIX: Only editable if Appraiser 2 AND NOT submitted --}} {{ $isAppraiser2 && !$appraiser2IsSubmitted ? '' : 'readonly' }}>
                 </div>
 
                 <div class="col-md-3">
