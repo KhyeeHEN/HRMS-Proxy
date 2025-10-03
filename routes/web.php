@@ -35,7 +35,6 @@ Route::get('/birthday', function () {
 Route::get('/calendar-test', function () {
     return view('test');
 });
-
 // Show Forgot Password Form
 Route::get('/forgot-password', function () {
     return view('forgot');

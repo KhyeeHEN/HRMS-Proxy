@@ -745,7 +745,6 @@ class EmployeeController extends Controller
             $assignment = \App\Models\AssetAssignment::where('asset_id', $asset->id)
                 ->where('employee_id', $employee->id)
                 ->first();
-
             if ($assignment) {
                 \App\Models\AssetAssignmentHistory::create([
                     'asset_id' => $asset->id,
@@ -782,7 +781,6 @@ class EmployeeController extends Controller
                 'employee_id' => $validated['employee_id'],
                 'assigned_at' => now()
             ]);
-
             \App\Models\AssetAssignmentHistory::create([
                 'asset_id' => $asset->id,
                 'employee_id' => $validated['employee_id'],
