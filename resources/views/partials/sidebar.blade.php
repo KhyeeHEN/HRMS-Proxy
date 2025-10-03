@@ -154,6 +154,7 @@
                         <div class="bg-white py-2 collapse-inner rounded">
                             <a class="collapse-item" href="{{ route('pms-dashboard') }}">PMS Profile</a>
                             <a class="collapse-item" href="{{ route('kpi.index') }}">Assigned KPI</a>
+                            <a class="collapse-item" href="{{ route('appraisal.index') }}">Appraisal</a>
                             <a class="collapse-item" href="">Documentation</a>
                         </div>
                     </div>

@@ -9,6 +9,7 @@ use App\Models\Company;
 use App\Models\CompanyEvent;    // for company events
 use App\Models\Holiday;         // for company holidays
 use App\Models\Kpi; // ADDED: KPI Model
+use App\Models\Appraisal; // ADDED: Appraisal Model
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

@@ -119,6 +119,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/kpi/assign/{kpi}', [KpiController::class, 'showAssignmentForm'])->name('kpi.assign.show');
     Route::post('/kpi/assign/{kpi}', [KpiController::class, 'assign'])->name('kpi.assign.store');
 
+    Route::resource('appraisal', AppraisalController::class);
 
     // Routes for PMS Dashboard
     Route::get('/pms-dashboard', [DashboardController::class, 'pmsIndex'])->name('pms-dashboard');
